@@ -1,0 +1,26 @@
+.viewField{
+
+}
+.addItem{
+/*    position: relative;*/
+/*left:25px;*/
+}
+.slider{
+    flex: 0 0 28%;
+    margin:1% 0.5% 0.5% 0.5%;
+}
+.box {
+    display: flex;
+    margin-top: 5px;
+}
+.content {
+    flex: 0 0 70%;
+    margin:1% 0px 0.5% 0.5%;
+}
+.title {
+    word-break: break-word;
+    word-wrap: break-word;
+}
+.paper {
+    height: 100%;
+}
