@@ -15,10 +15,10 @@ import {addNoteAC, changeNoteNameAC, NoteType, removeNoteAC, viewModeAC} from ".
 import {AddItemForm} from "./components/AddItemForm";
 import {Note} from "./components/Note";
 import { DeleteForever, ModeEdit} from "@mui/icons-material";
-import ReactDOM from 'react-dom';
 import 'antd/dist/antd.css';
 import './index.css';
-import { Modal, Button } from 'antd';
+import { Modal } from 'antd';
+import {EditableSpan} from "./components/EditableSpan";
 
 export type TasksStateType = {
     [key: string]: Array<TaskType>
@@ -120,19 +120,13 @@ function App() {
                                             <IconButton onClick={showModal}>
                                                 <DeleteForever color="error"/>
                                             </IconButton>
-                                            <IconButton>
+                                            <IconButton onClick={showModal}>
                                                 <ModeEdit color="primary"/>
                                             </IconButton>
                                             <h1>{el.title}</h1>
                                             <h2>
                                                 {arrTask.map(el => <div>{el.title}</div>)}
                                             </h2>
-                                       {/*     <Modal title={el.title}
-                                                   visible={el.id === isModalVisible}
-                                                   onOk={()=>handleOk(el.id)}
-                                                   onCancel={()=> handleCancel('')}>
-                                                <p>Delete note ?</p>
-                                            </Modal>*/}
                                             <Modal title={el.title}
                                                    visible={isModalVisible}
                                                    onOk={()=>handleOk(el.id)}
@@ -152,6 +146,4 @@ function App() {
         </Container>
     );
 }
-
-// ReactDOM.render(<App />, document.getElementById('container'));
 export default App;

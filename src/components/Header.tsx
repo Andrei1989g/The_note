@@ -7,11 +7,11 @@ import IconButton from '@mui/material/IconButton';
 import Typography from '@mui/material/Typography';
 import InputBase from '@mui/material/InputBase';
 import SearchIcon from '@mui/icons-material/Search';
-import {ChangeEvent, useEffect, useState} from "react";
+import {ChangeEvent, KeyboardEvent, useEffect, useState} from "react";
 import {useSelector} from "react-redux";
 import {AppRootStateType} from "../store/store";
 import {NoteType} from "../store/noteRecucer";
-import {TasksStateType} from "../App";
+
 
 const Search = styled('div')(({theme}) => ({
     position: 'relative',
@@ -68,20 +68,28 @@ export default function SearchAppBar() {
     }, [])
 
     let note = useSelector<AppRootStateType, Array<NoteType>>(state => state.note)
-    // let tasks = useSelector<AppRootStateType, TasksStateType>(state => state.tasks)
-
 
     const [searchTerm, setSearchTerm] = React.useState("");
     const [searchResults, setSearchResults] = React.useState<string[]>([]);
-    const handleChange = (e:ChangeEvent<HTMLInputElement>) => {
+    const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
         setSearchTerm(e.target.value);
     };
 
+
     React.useEffect(() => {
-        const results = note.map(el => el.title).filter( (el) => [searchTerm.toLowerCase()].every( ell => el.includes(ell)))
+        const results = note.map(el => el.title.toLowerCase()).filter((el) => [searchTerm].every(ell => el.includes(ell)))
+        // const results = note.map(el => el.title).filter(el=>el.toLowerCase().includes(el))
         setSearchResults(results);
     }, [searchTerm]);
 
+    let searchingResults = searchResults.map(item => (<div>{item}</div>))
+
+    // const onKeyPressHandler = (e: KeyboardEvent<HTMLInputElement>) => {
+    //     if(e.key === "Enter") {
+    //         const results = note.map(el => el.title).filter((el) => [searchTerm.toLowerCase()].every(ell => el.includes(ell)))
+    //         setSearchResults(results);
+    //     }
+    // }
 
     return (
         <Box sx={{flexGrow: 1}}>
@@ -112,12 +120,11 @@ export default function SearchAppBar() {
                             inputProps={{'aria-label': 'search'}}
                             value={searchTerm}
                             onChange={handleChange}
+                            // onKeyPress={onKeyPressHandler}
                         />
-                        <ul>
-                            {searchResults.map(item => (
-                                <li>{item}</li>
-                            ))}
-                        </ul>
+                        <div>
+                        {searchingResults}
+                        </div>
                     </Search>
                 </Toolbar>
             </AppBar>
