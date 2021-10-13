@@ -12,7 +12,7 @@ export type InitialStateType = {
 }
 let initialState:InitialStateType = {
     ["NoteId"]: [
-        {id: v1(), title: "milk", isDone: false},
+        {id: v1(), title: "Some courses", isDone: false},
         {id: v1(), title: "React Book", isDone: false}
     ]
 }

@@ -1,26 +1,39 @@
-.viewField{
+.showField {
+    position: relative;
+    top:10px;
+    left:5%;
+    width: 90%;
+    text-align: center;
+}
 
+.addItem {
+    /*    position: relative;*/
+    /*left:25px;*/
 }
-.addItem{
-/*    position: relative;*/
-/*left:25px;*/
-}
-.slider{
+
+.slider {
     flex: 0 0 29%;
-    margin:1% 0.5% 0.5% 0.5%;
+    margin: 1% 0.5% 0.5% 0.5%;
 }
+
 .box {
     display: flex;
     margin-top: 5px;
 }
+
 .content {
     flex: 0 0 69%;
-    margin:1% 0px 0.5% 0.5%;
+    margin: 1% 0px 0.5% 0.5%;
 }
+
 .title {
     word-break: break-word;
     word-wrap: break-word;
 }
+
 .paper {
     height: 100%;
+}
+.delete {
+
 }
