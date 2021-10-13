@@ -1,56 +1,122 @@
-import React, {ChangeEvent, KeyboardEvent, useState} from 'react';
+import React, {useCallback, useState} from 'react';
 import './App.css';
 import Header from './components/Header';
-import {Button, Container, Grid, Input, Paper, Stack, TextField} from "@mui/material";
-import {Todo} from './components/Todo';
-import todo, {TodoType} from "./store/todo";
+import {Container, Grid, Paper, Stack} from "@mui/material";
 import s from "./App.module.css"
-import {v1} from "uuid";
+import {useDispatch, useSelector} from "react-redux";
+import {AppRootStateType} from "./store/store";
+import {
+    addTaskAC,
+    changeStatusAC,
+    changeTaskTitleAC,
+    removeTaskAC, TaskType,
+} from "./store/taskReducer";
+import {addNoteAC, changeNoteNameAC, NoteType, removeNoteAC, viewModeAC} from "./store/noteRecucer";
+import {AddItemForm} from "./components/AddItemForm";
+import {Note} from "./components/Note";
+import {Task} from "./components/Task";
+
+type TasksStateType = {
+    [key: string]: Array<TaskType>
+}
 
 function App() {
+    let [show, setShow] = useState(false)
+    let [currentValue, setCurrentValue] = useState("")
+    //console.log('currentValue: ', currentValue)
+    let dispatch = useDispatch()
+    let note = useSelector<AppRootStateType, Array<NoteType>>(state => state.note)
+    let tasks = useSelector<AppRootStateType, TasksStateType>(state => state.tasks)
 
-    let [value, setValue] = useState("")
-    const onChangeHandler = (e: ChangeEvent<HTMLInputElement>) => {
-        setValue(e.currentTarget.value)
-    }
+    const removeTask = useCallback((id: string, noteId: string) => {
+        dispatch(removeTaskAC(id, noteId));
+    }, [])
 
+    const addTask = useCallback((title: string, noteId: string) => {
+        dispatch(addTaskAC(title, noteId));
+    }, [])
 
-    const addTodo = () => {
-        todo.addTodo(value)
-        setValue("")
-    }
-    const onKeyPressHandler = (e: KeyboardEvent<HTMLInputElement>) => {
-        if (e.key === "Enter") {
-            addTodo()
-        }
-    }
+    const changeStatus = useCallback((id: string, isDone: boolean, noteId: string) => {
+        dispatch(changeStatusAC(id, isDone, noteId));
+    }, [])
 
+    const changeTaskTitle = useCallback((id: string, newTitle: string, noteId: string) => {
+        dispatch(changeTaskTitleAC(id, newTitle, noteId));
+    }, [])
+
+    const removeNote = useCallback((id: string) => {
+        dispatch(removeNoteAC(id))
+    }, [])
+
+    const changeNoteTitle = useCallback((id: string, title: string) => {
+        dispatch(changeNoteNameAC(id, title))
+    }, [])
+
+    const addNote = useCallback((title: string) => {
+        dispatch(addNoteAC(title))
+    }, [dispatch])
+
+    const viewMode = useCallback((noteId: string) => {
+        dispatch(viewModeAC(noteId))
+        setShow(true)
+        setCurrentValue(noteId)
+        console.log(noteId)
+    }, [dispatch])
+    const arr = note.map(el => el.id === currentValue ? el : {id: "id not defined", title: 'title not defined'})
+    console.log('arr: ', arr)
     return (
         <Container fixed className={s.container}>
             <Grid container style={{padding: "0px"}}>
                 <Header/>
             </Grid>
-            <Paper className={s.box}>
+            <Paper style={{backgroundColor: "skyblue"}} className={s.box}>
                 <Paper className={s.slider}>
                     <div className={s.addItem}>
-                    <TextField
-                        size="small"
-                        label="Title"
-                        value={value}
-                        onChange={onChangeHandler}
-                        onKeyPress={onKeyPressHandler}/>
-                    <Button style={{height: "40px", marginLeft: "2px"}} variant="outlined" color="primary"
-                            onClick={addTodo}>+</Button>
+                        <AddItemForm addItem={addNote}/>
                     </div>
-                    <Todo/>
+                    {note.map(n => {
+                        return <Stack spacing={3}>
+                            <Paper style={{padding: "10px", margin: "5px", border: " solid skyblue 0.5px"}}>
+                                <div onClick={() => viewMode(n.id)}>
+                                    <Note
+                                        key={n.id}
+                                        id={n.id}
+                                        title={n.title}
+                                        tasks={tasks[n.id]}
+                                        removeTask={removeTask}
+                                        addTask={addTask}
+                                        changeTaskStatus={changeStatus}
+                                        removeNote={removeNote}
+                                        changeTaskTitle={changeTaskTitle}
+                                        changeNoteTitle={changeNoteTitle}
+                                    />
+                                </div>
+                            </Paper>
+                        </Stack>
+                    })}
                 </Paper>
                 <div className={s.content}>
-                    <Paper className={s.paper}>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Amet blanditiis debitis delectus
-                        deleniti ea eius iste labore maiores, minima molestias, possimus quas ratione reiciendis
-                        reprehenderit sapiente sint totam, voluptates voluptatum.</Paper>
+                    <Paper className={s.paper}>
+                        <div>
+
+                            {show ? note.map((el) => {
+                                const arrTask = tasks[currentValue]
+                                if (el.id === currentValue) {
+                                    return <Paper className={s.showField}>
+                                        <div>{el.title}
+                                            <div>
+                                                {arrTask.map(el => <div>{el.title}</div>)}
+                                            </div>
+                                        </div>
+                                    </Paper>
+                                } else {
+                                    return null
+                                }
+                            }) : "Choice your note"}
+                        </div>
+                    </Paper>
                 </div>
             </Paper>
-
         </Container>
     );
 }
