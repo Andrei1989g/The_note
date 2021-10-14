@@ -1,7 +1,7 @@
 import React, {useCallback, useState} from 'react';
 import './App.css';
 import Header from './components/Header';
-import {Container, Grid, IconButton, Paper, Stack} from "@mui/material";
+import {Container, Grid, Paper, Stack} from "@mui/material";
 import s from "./App.module.css"
 import {useDispatch, useSelector} from "react-redux";
 import {AppRootStateType} from "./store/store";
@@ -14,11 +14,9 @@ import {
 import {addNoteAC, changeNoteNameAC, NoteType, removeNoteAC, viewModeAC} from "./store/noteRecucer";
 import {AddItemForm} from "./components/AddItemForm";
 import {Note} from "./components/Note";
-import { DeleteForever, ModeEdit} from "@mui/icons-material";
 import 'antd/dist/antd.css';
 import './index.css';
-import { Modal } from 'antd';
-import {EditableSpan} from "./components/EditableSpan";
+import {ModalMode} from "./components/ModalMode";
 
 export type TasksStateType = {
     [key: string]: Array<TaskType>
@@ -27,7 +25,6 @@ export type TasksStateType = {
 function App() {
     let [show, setShow] = useState(false)
     let [currentValue, setCurrentValue] = useState("")
-    let [isModalVisible, setIsModalVisible] = useState(false);
     let dispatch = useDispatch()
     let note = useSelector<AppRootStateType, Array<NoteType>>(state => state.note)
     let tasks = useSelector<AppRootStateType, TasksStateType>(state => state.tasks)
@@ -67,18 +64,6 @@ function App() {
         console.log(noteId)
     }, [dispatch])
 
-    const showModal = () => {
-        setIsModalVisible(true);
-    };
-    const handleOk = (id:string) => {
-        removeNote(id)
-        setIsModalVisible(false);
-    };
-    const handleCancel = () => {
-        setIsModalVisible(false);
-    };
-
-
     return (
         <Container fixed className={s.container}>
             <Grid container style={{padding: "0px"}}>
@@ -116,24 +101,12 @@ function App() {
                             {show ? note.map((el) => {
                                     const arrTask = tasks[currentValue]
                                     if (el.id === currentValue) {
-                                        return <Paper className={s.showField}>
-                                            <IconButton onClick={showModal}>
-                                                <DeleteForever color="error"/>
-                                            </IconButton>
-                                            <IconButton onClick={showModal}>
-                                                <ModeEdit color="primary"/>
-                                            </IconButton>
-                                            <h1>{el.title}</h1>
-                                            <h2>
-                                                {arrTask.map(el => <div>{el.title}</div>)}
-                                            </h2>
-                                            <Modal title={el.title}
-                                                   visible={isModalVisible}
-                                                   onOk={()=>handleOk(el.id)}
-                                                   onCancel={handleCancel}>
-                                                <p>Delete note ?</p>
-                                            </Modal>
-                                        </Paper>
+                                        return <ModalMode
+                                            arrTask={arrTask}
+                                            id={el.id}
+                                            title={el.title}
+                                            removeNote={removeNote}
+                                            currentValue={currentValue}/>
                                     }
                                 })
                                 : <div style={{textAlign: "center"}}>
@@ -146,4 +119,6 @@ function App() {
         </Container>
     );
 }
+
 export default App;
+
