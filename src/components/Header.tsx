@@ -7,7 +7,7 @@ import IconButton from '@mui/material/IconButton';
 import Typography from '@mui/material/Typography';
 import InputBase from '@mui/material/InputBase';
 import SearchIcon from '@mui/icons-material/Search';
-import {ChangeEvent, KeyboardEvent, useEffect, useState} from "react";
+import {ChangeEvent, KeyboardEventHandler, useEffect, useState} from "react";
 import {useSelector} from "react-redux";
 import {AppRootStateType} from "../store/store";
 import {NoteType} from "../store/noteRecucer";
@@ -78,19 +78,15 @@ export default function SearchAppBar() {
 
     React.useEffect(() => {
         const results = note.map(el => el.title.toLowerCase()).filter((el) => [searchTerm].every(ell => el.includes(ell)))
-        // const results = note.map(el => el.title).filter(el=>el.toLowerCase().includes(el))
         setSearchResults(results);
     }, [searchTerm]);
 
-    let searchingResults = searchResults.map(item => (<div>{item}</div>))
+     let searchingResults;
+const onKeyPressHandler =(e:KeyboardEventHandler<SVGSVGElement>) => {
+    console.log(e)
 
-    // const onKeyPressHandler = (e: KeyboardEvent<HTMLInputElement>) => {
-    //     if(e.key === "Enter") {
-    //         const results = note.map(el => el.title).filter((el) => [searchTerm.toLowerCase()].every(ell => el.includes(ell)))
-    //         setSearchResults(results);
-    //     }
-    // }
-
+    searchingResults = searchResults.map(item => (<div>{item}</div>))
+}
     return (
         <Box sx={{flexGrow: 1}}>
             <AppBar position="static">

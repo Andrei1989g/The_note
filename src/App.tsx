@@ -106,7 +106,8 @@ function App() {
                                             id={el.id}
                                             title={el.title}
                                             removeNote={removeNote}
-                                            currentValue={currentValue}/>
+                                            currentValue={currentValue}
+                                            changeNoteTitle={changeNoteTitle}/>
                                     }
                                 })
                                 : <div style={{textAlign: "center"}}>
